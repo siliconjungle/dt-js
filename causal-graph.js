@@ -8,37 +8,37 @@ export const create = () => ({
   idToEntry: {},
 })
 
-export const getEntriesForAgent = (casualGraph, agent) => {
-  casualGraph.idToEntry[agent] = casualGraph.idToEntry[agent] || []
-  return casualGraph.idToEntry[agent]
+export const getEntriesForAgent = (causalGraph, agent) => {
+  causalGraph.idToEntry[agent] = causalGraph.idToEntry[agent] || []
+  return causalGraph.idToEntry[agent]
 }
 
-export const add = (casualGraph, agent, seq, parents) => {
+export const add = (causalGraph, agent, seq, parents) => {
   const entry = {
     agent,
     seq,
     parents,
   }
-  const entries = getEntriesForAgent(casualGraph, agent)
+  const entries = getEntriesForAgent(causalGraph, agent)
   if (entries[seq] != null) {
     return entries[seq]
   }
 
-  const index = casualGraph.entries.length
+  const index = causalGraph.entries.length
   entries[seq] = index
 
-  casualGraph.entries.push(entry)
+  causalGraph.entries.push(entry)
 
   return index
 }
 
-export const fromLocalIndexToEntry = (casualGraph, localIndex) =>
-  casualGraph.entries[localIndex]
+export const fromLocalIndexToEntry = (causalGraph, localIndex) =>
+  causalGraph.entries[localIndex]
 
-export const fromEntryToLocalIndex = (casualGraph, agent, seq) =>
-  getEntriesForAgent(casualGraph, agent)[seq]
+export const fromEntryToLocalIndex = (causalGraph, agent, seq) =>
+  getEntriesForAgent(causalGraph, agent)[seq]
 
-export const versionContainsTime = (casualGraph, frontier, target) => {
+export const versionContainsTime = (causalGraph, frontier, target) => {
   const queue = new PriorityQueue((a, b) => a - b)
   frontier.filter((v) => v >= target).forEach((v) => queue.enq(v))
   while (queue.size() > 0) {
@@ -46,7 +46,7 @@ export const versionContainsTime = (casualGraph, frontier, target) => {
     if (v === target) {
       return true
     }
-    const entry = fromLocalIndexToEntry(casualGraph, v)
+    const entry = fromLocalIndexToEntry(causalGraph, v)
     entry.parents.filter((v) => v >= target).forEach((p) => queue.enq(p))
   }
   return false
