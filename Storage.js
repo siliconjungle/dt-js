@@ -18,7 +18,6 @@ class Storage extends EventEmitter {
     })
   }
 
-  // [agent, seq, parents, crdtId, type, key, value]
   applyOperations(ops, isLocal) {
     const filteredOps = ops.filter(
       ([agent, seq, parents, crdtId, type, key, value]) => {
@@ -34,22 +33,13 @@ class Storage extends EventEmitter {
           seq,
           parents
         )
-        let shouldMerge
-        if (oldVersion == null) {
-          shouldMerge = true
-        } else {
-          const cmp = causalGraph.compareVersions(
-            this.causalGraph,
-            oldVersion,
-            newVersion
-          )
-          shouldMerge =
-            cmp < 0 ||
-            (cmp === 0 &&
-              agent >
-                causalGraph.fromLocalIndexToEntry(this.causalGraph, oldVersion)
-                  .agent)
-        }
+
+        const shouldMerge = causalGraph.shouldMerge(
+          this.causalGraph,
+          oldVersion,
+          newVersion,
+          agent
+        )
 
         if (shouldMerge) {
           crdt.value[key] = value

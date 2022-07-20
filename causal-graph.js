@@ -69,3 +69,16 @@ export const compareVersions = (causalGraph, a, b) => {
   }
   throw new Error('a and b are equal')
 }
+
+export const shouldMerge = (causalGraph, oldVersion, newVersion, agent) => {
+  if (oldVersion == null) {
+    return true
+  }
+
+  const cmp = compareVersions(causalGraph, oldVersion, newVersion)
+
+  return (
+    cmp < 0 ||
+    (cmp === 0 && agent > fromLocalIndexToEntry(causalGraph, oldVersion).agent)
+  )
+}

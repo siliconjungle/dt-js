@@ -2,7 +2,6 @@ import Storage, { ROOT } from './Storage.js'
 
 const storage = new Storage()
 
-// [agent, seq, parents, crdtId, type, key, value]
 const operations = [
   ['agent1', 1, [], ROOT, 'map', 'key', 'value1'],
   ['agent3', 2, [], ROOT, 'map', 'key', 'value3'],
@@ -10,9 +9,9 @@ const operations = [
 ]
 
 storage.on('applylocal', (ops) => {
-  console.log('applylocal', ops)
+  console.log('Apply local', ops)
 })
 
 storage.applyOperations(operations, true)
 
-console.log('_STORAGE_VALUE_', storage.value)
+console.log('Storage value', storage.value)
