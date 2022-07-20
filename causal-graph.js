@@ -32,9 +32,8 @@ export const add = (casualGraph, agent, seq, parents) => {
   return index
 }
 
-export const fromLocalIndexToEntry = (casualGraph, localIndex) => {
-  return casualGraph.entries[localIndex]
-}
+export const fromLocalIndexToEntry = (casualGraph, localIndex) =>
+  casualGraph.entries[localIndex]
 
 export const fromEntryToLocalIndex = (casualGraph, agent, seq) =>
   getEntriesForAgent(casualGraph, agent)[seq]
@@ -55,26 +54,14 @@ export const versionContainsTime = (casualGraph, frontier, target) => {
 
 export const compareVersions = (causalGraph, a, b) => {
   if (a > b) {
-    if (versionContainsTime(causalGraph, [a], b)) {
-      return -1
-    } else {
-      return 0
-    }
+    return versionContainsTime(causalGraph, [a], b) ? -1 : 0
   } else if (a < b) {
-    if (versionContainsTime(causalGraph, [b], a)) {
-      return 1
-    } else {
-      return 0
-    }
+    return versionContainsTime(causalGraph, [b], a) ? 1 : 0
   }
   throw new Error('a and b are equal')
 }
 
 export const shouldMerge = (causalGraph, oldVersion, newVersion, agent) => {
-  if (oldVersion == null) {
-    return true
-  }
-
   const cmp = compareVersions(causalGraph, oldVersion, newVersion)
 
   return (

@@ -34,12 +34,14 @@ class Storage extends EventEmitter {
           parents
         )
 
-        const shouldMerge = causalGraph.shouldMerge(
-          this.causalGraph,
-          oldVersion,
-          newVersion,
-          agent
-        )
+        const shouldMerge =
+          oldVersion == null ||
+          causalGraph.shouldMerge(
+            this.causalGraph,
+            oldVersion,
+            newVersion,
+            agent
+          )
 
         if (shouldMerge) {
           crdt.value[key] = value
