@@ -39,7 +39,7 @@ export const fromLocalIndexToEntry = (casualGraph, localIndex) => {
 export const fromEntryToLocalIndex = (casualGraph, agent, seq) =>
   getEntriesForAgent(casualGraph, agent)[seq]
 
-export const doesDominate = (casualGraph, frontier, target) => {
+export const versionContainsTime = (casualGraph, frontier, target) => {
   const queue = new PriorityQueue((a, b) => a - b)
   frontier.filter((v) => v >= target).forEach((v) => queue.enq(v))
   while (queue.size() > 0) {
@@ -51,4 +51,21 @@ export const doesDominate = (casualGraph, frontier, target) => {
     entry.parents.filter((v) => v >= target).forEach((p) => queue.enq(p))
   }
   return false
+}
+
+export const compareVersions = (causalGraph, a, b) => {
+  if (a > b) {
+    if (versionContainsTime(causalGraph, [a], b)) {
+      return -1
+    } else {
+      return 0
+    }
+  } else if (a < b) {
+    if (versionContainsTime(causalGraph, [b], a)) {
+      return 1
+    } else {
+      return 0
+    }
+  }
+  throw new Error('a and b are equal')
 }
