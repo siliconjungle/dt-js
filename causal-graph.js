@@ -6,12 +6,23 @@ import PriorityQueue from 'priorityqueuejs'
 export const create = () => ({
   entries: [],
   idToEntry: {},
+  version: []
 })
 
-export const getEntriesForAgent = (causalGraph, agent) => {
-  causalGraph.idToEntry[agent] = causalGraph.idToEntry[agent] || []
-  return causalGraph.idToEntry[agent]
+export const advanceFrontier = (frontier, version, parents) => {
+  // assert(!branchContainsVersion(db, order, branch), 'db already contains version')
+  // for (const parent of op.parents) {
+  //    assert(branchContainsVersion(db, parent, branch), 'operation in the future')
+  // }
+
+  const f = frontier.filter(v => !parents.includes(v))
+  f.push(version)
+  return f.sort((a, b) => a - b)
 }
+
+export const getEntriesForAgent = (causalGraph, agent) => (
+  causalGraph.idToEntry[agent] ??= []
+)
 
 export const add = (causalGraph, agent, seq, parents) => {
   const entry = {
@@ -28,8 +39,16 @@ export const add = (causalGraph, agent, seq, parents) => {
   entries[seq] = index
 
   causalGraph.entries.push(entry)
+  causalGraph.version = advanceFrontier(causalGraph.version, index, parents)
 
   return index
+}
+
+export const assignLocal = (causalGraph, agent) => {
+  const entries = getEntriesForAgent(causalGraph, agent)
+  const seq = entries.length
+  const version = add(causalGraph, agent, seq, causalGraph.version)
+  return [seq, version]
 }
 
 export const fromLocalIndexToEntry = (causalGraph, localIndex) =>
