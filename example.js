@@ -2,13 +2,17 @@ import Storage, { ROOT } from './Storage.js'
 
 const storage = new Storage()
 
-const inner = storage.applyLocalOperation('seph', ROOT, 'map',
-  {key: 'hey', embeddedType: 'map'}
-)
-
-storage.applyLocalOperation('seph', inner, 'map',
+storage.applyLocalOperation(['seph', 0], ROOT, 'map',
   {key: 'yo', primitive: 123}
 )
+
+// const inner = storage.applyLocalOperation(['seph', 0], ROOT, 'map',
+//   {key: 'hey', embeddedType: 'map'}
+// )
+
+// storage.applyLocalOperation(['seph', 1], inner, 'map',
+//   {key: 'yo', primitive: 123}
+// )
 
 // const inner = storage.applyRemoteOperation({
 //   agent: 'seph', seq: 0, parents: [],
@@ -37,4 +41,4 @@ storage.applyLocalOperation('seph', inner, 'map',
 // storage.applyOperations(operations, true)
 
 console.log('Storage value', storage.value)
-console.log('version', storage.causalGraph.version)
+// console.log('version', storage.causalGraph.version)
